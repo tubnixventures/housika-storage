@@ -1,0 +1,23 @@
+{
+  "name": "housika-storage",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1006.0",
+    "@aws-sdk/s3-request-presigner": "^3.1006.0",
+    "@hono/node-server": "^1.19.11",
+    "hono": "^4.12.5",
+    "jsonwebtoken": "^9.0.3",
+    "redis": "^5.11.0",
+    "s3": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}
