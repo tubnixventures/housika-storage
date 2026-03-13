@@ -8,6 +8,7 @@ import uploadRoute from "./routes/upload.js";
 import deleteRoute from "./routes/delete.js";
 import presignRoute from "./routes/preasign.js";
 import { authMiddleware } from "./middleware/auth.js";
+import { rateLimiter } from "./middleware/rateLimiter.js";
 
 const app = new Hono();
 
@@ -20,7 +21,10 @@ app.use("*", async (c, next) => {
   c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
 });
 
-// 🔎 Logger middleware
+// � Rate limiting middleware
+app.use("*", rateLimiter);
+
+// �🔎 Logger middleware
 app.use("*", logger());
 
 // 🌍 CORS middleware with `start` matcher

@@ -4,12 +4,14 @@ A high-performance, secure, and scalable file storage API built with Hono and Cl
 
 ## Features
 
-- JWT-based authentication
+- JWT-based authentication (header or cookie)
 - File upload, deletion, and presigned URL generation
 - Support for all file types
 - CORS enabled
 - Security headers
+- Rate limiting (100 req/min per IP)
 - Logger middleware
+- PM2 clustering support for hyperscale performance
 
 ## Authentication
 
@@ -19,6 +21,17 @@ The API supports hybrid token authentication:
 - **Cookie**: `token=<jwt_token>`
 
 Web applications can use cookies for automatic token handling, while mobile apps can use headers.
+
+## Environment Variables
+
+Set the following environment variables:
+
+- `JWT_SECRET`: Secret key for JWT verification
+- `R2_ENDPOINT`: Cloudflare R2 endpoint
+- `R2_ACCESS_KEY_ID`: R2 access key ID
+- `R2_SECRET_ACCESS_KEY`: R2 secret access key
+- `REDIS_URL`: Redis connection URL (default: redis://localhost:6379)
+- `PORT`: Server port (optional, defaults to 3000)
 
 ## Installation
 
@@ -37,6 +50,15 @@ npm run dev
 ```bash
 npm run build
 npm start
+```
+
+## PM2 Clustering (Hyperscale)
+
+For high-performance deployment with multiple CPU cores:
+
+```bash
+npm run pm2:cluster  # Start with max CPU cores
+npm run pm2          # Start single instance
 ```
 
 ## API Endpoints
