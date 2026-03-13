@@ -30,7 +30,7 @@ app.use("*", cors({
         return null;
     },
     allowMethods: ["GET", "POST", "DELETE", "OPTIONS"],
-    allowHeaders: ["Content-Type", "Authorization"],
+    allowHeaders: ["Content-Type", "Authorization", "Cookie"],
     credentials: true,
 }));
 // � Auth middleware for protected routes

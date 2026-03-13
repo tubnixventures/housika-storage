@@ -11,15 +11,14 @@ A high-performance, secure, and scalable file storage API built with Hono and Cl
 - Security headers
 - Logger middleware
 
-## Environment Variables
+## Authentication
 
-Set the following environment variables:
+The API supports hybrid token authentication:
 
-- `JWT_SECRET`: Secret key for JWT verification
-- `R2_ENDPOINT`: Cloudflare R2 endpoint
-- `R2_ACCESS_KEY_ID`: R2 access key ID
-- `R2_SECRET_ACCESS_KEY`: R2 secret access key
-- `PORT`: Server port (optional, defaults to 3000)
+- **Header**: `Authorization: Bearer <jwt_token>`
+- **Cookie**: `token=<jwt_token>`
+
+Web applications can use cookies for automatic token handling, while mobile apps can use headers.
 
 ## Installation
 
