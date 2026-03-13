@@ -7,8 +7,18 @@ import { serve } from "@hono/node-server";
 import uploadRoute from "./routes/upload.js";
 import deleteRoute from "./routes/delete.js";
 import presignRoute from "./routes/preasign.js";
+import { authMiddleware } from "./middleware/auth.js";
 
 const app = new Hono();
+
+// 🔒 Security headers middleware
+app.use("*", async (c, next) => {
+  await next();
+  c.header("X-Content-Type-Options", "nosniff");
+  c.header("X-Frame-Options", "DENY");
+  c.header("X-XSS-Protection", "1; mode=block");
+  c.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+});
 
 // 🔎 Logger middleware
 app.use("*", logger());
@@ -18,21 +28,21 @@ app.use(
   "*",
   cors({
     origin: (origin) => {
-      if (!origin) return null; // ✅ return null instead of false
-      const allowedStarts = [
-        "http://localhost",
-        "https://housika.co.ke",
-        "https://housika.com",
-      ];
-      return allowedStarts.some((prefix) => origin.startsWith(prefix))
-        ? origin
-        : null; // ✅ return null instead of false
+      if (!origin) return null;
+      if (origin.startsWith("http://localhost:")) return origin;
+      if (origin === "https://housika.co.ke" || origin.endsWith(".housika.co.ke")) return origin;
+      return null;
     },
     allowMethods: ["GET", "POST", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+// � Auth middleware for protected routes
+
+app.use("/delete/*", authMiddleware);
+app.use("/presign/*", authMiddleware);
 
 // 🛠️ Core routes
 app.route("/upload", uploadRoute);
@@ -43,6 +53,13 @@ app.route("/presign", presignRoute);
 app.get("/", (c) => c.text("Housika API running ✅"));
 
 // 🚀 Start server
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET environment variable is required");
+}
+if (!process.env.R2_ENDPOINT || !process.env.R2_ACCESS_KEY_ID || !process.env.R2_SECRET_ACCESS_KEY) {
+  throw new Error("R2 environment variables are required");
+}
+
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 console.log(`Server running at http://localhost:${port}`);
 

@@ -16,12 +16,12 @@ export async function generatePresignedUrl(bucket: string, key: string, expiresI
   return await getSignedUrl(r2Client, command, { expiresIn });
 }
 
-export async function uploadReceipt(bucket: string, key: string, body: Buffer | Uint8Array | string) {
+export async function uploadReceipt(bucket: string, key: string, body: Buffer | Uint8Array | string, contentType?: string) {
   const command = new PutObjectCommand({
     Bucket: bucket,
     Key: key,
     Body: body,
-    ContentType: "application/pdf",
+    ContentType: contentType || "application/octet-stream",
   });
   return await r2Client.send(command);
 }
